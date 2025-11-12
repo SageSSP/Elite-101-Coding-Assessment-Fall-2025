@@ -9,7 +9,7 @@ def view_available_books(library_books):
     print("Available Books: \n")
     for book in library_books:
         if book["available"]:
-            print(f"ID: {book["id"]}")
+            print(f"ID: {book['id']}")
             print(f"Title: {book["title"]}")
             print(f"Author: {book["author"]}")
             print("\n-----------------------\n")
@@ -21,7 +21,7 @@ def search_books(library_books):
     print("Search Results: \n")
     for book in library_books:
         if book("author").lower() == term or book("genre").lower() == term:
-            print(f"ID: {book["id"]}")
+            print(f"ID: {book['id']}")
             print(f"Title: {book["title"]}")
             print(f"Author: {book["author"]}")
             print("\n-----------------------\n")
@@ -31,7 +31,7 @@ def search_books(library_books):
 def checkout_book(library_books):
     book_id = input("Enter the ID of the book you would like to check out:")
     for book in library_books:
-        if book["id"] == book_id:
+        if book['id'] == book_id:
             if book["available"] == True:
                 book["available"] = False
                 due = datetime.today() + timedelta(weeks=2)
@@ -39,6 +39,7 @@ def checkout_book(library_books):
                 book["checkouts"] += 1
                 print(f"You have successfully checked out {book["title"]}.")
                 print("Due date:", book["due_date"])
+                return
             else:
                 print("Sorry, this book is already checked out.")
                 return
@@ -49,9 +50,9 @@ def checkout_book(library_books):
 def return_book(library_books):
     book_id = input("Enter the ID of the book to return:")
     for book in library_books:
-        if book["id"] == book_id:
-            book("available") = True
-            book("due_date") = None
+        if book['id'] == book_id:
+            book["available"] = True
+            book["due_date"] = None
             print(f"You have successfully returned {book["title"]}.")
             return
     print("Book ID not found.")
@@ -59,11 +60,12 @@ def return_book(library_books):
 # TODO: Create a function to list all overdue books
 # Overdue books
 def view_overdue_books(library_books):
+    found = False
     print("Overdue Books: \n")
     today = datetime.today()
     for book in library_books:
         if book["available"] == False and book("due_date") is not None:
-            due = datetime.striptime(book["due_date"], "%Y-%m-%d")
+            due = datetime.strptime(book["due_date"], "%Y-%m-%d")
             if due < today:
                 print(f"{book["title"]} was due on {book["due_date"]}.")
                 found = True
@@ -105,7 +107,7 @@ class Book:
     
 # Library
 books = [
-    Book("B1", "The Lightning Theif", "Rick Riordan", "Fantasy", True, None, 2),
+    Book("B1", "The Lightning Thief", "Rick Riordan", "Fantasy", True, None, 2),
     Book("B2", "To Kill a Mockingbird", "Harper Lee", "Historical", False, "2025-11-01", 5),
     Book("B3", "The Great Gatsby", "F. Scott Fitzgerald", "Classic", True, None, 3),
     Book("B4", "1984", "George Orwell", "Dystopian", True, None, 4),
@@ -123,9 +125,10 @@ while True:
     print("3. Checkout a Book")
     print("4. Return a Book")
     print("5. View Overdue Books")
-    print("6. Quit")
+    print("6. Quit\n")
 
     choice = input("Enter your choice (1-6): ")
+    print("")
 
     if choice == "1":
         for book in books:
